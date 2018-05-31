@@ -27,7 +27,7 @@ if args.set_class_iou is not None:
   specific_iou_flagged = True
 
 # if there are no images then no animation can be shown
-img_path = 'images'
+img_path = 'img'
 if os.path.exists(img_path): 
   for dirpath, dirnames, files in os.walk(img_path):
     if not files:
@@ -144,7 +144,7 @@ def file_lines_to_list(path):
 """
 def draw_text_in_image(img, text, pos, color, line_width):
   font = cv2.FONT_HERSHEY_PLAIN
-  fontScale = 1
+  fontScale = 0.9
   lineType = 1
   bottomLeftCornerOfText = pos
   cv2.putText(img, text,
@@ -285,7 +285,7 @@ if show_animation:
    Create a list of all the class names present in the ground-truth (gt_classes).
 """
 # get a list with the ground-truth files
-ground_truth_files_list = glob.glob('ground-truth/*.txt')
+ground_truth_files_list = glob.glob('true/*.txt')
 if len(ground_truth_files_list) == 0:
   error("Error: No ground-truth files found!")
 ground_truth_files_list.sort()
@@ -297,8 +297,8 @@ for txt_file in ground_truth_files_list:
   file_id = txt_file.split(".txt",1)[0]
   file_id = os.path.basename(os.path.normpath(file_id))
   # check if there is a correspondent predicted objects file
-  if not os.path.exists('predicted/' + file_id + ".txt"):
-    error_msg = "Error. File not found: predicted/" +  file_id + ".txt\n"
+  if not os.path.exists('pred/' + file_id + ".txt"):
+    error_msg = "Error. File not found: pred/" +  file_id + ".txt\n"
     error_msg += "(You can avoid this error message by running extra/intersect-gt-and-pred.py)"
     error(error_msg)
   lines_list = file_lines_to_list(txt_file)
@@ -365,7 +365,7 @@ if specific_iou_flagged:
    Load each of the predicted files into a temporary ".json" file.
 """
 # get a list with the predicted files
-predicted_files_list = glob.glob('predicted/*.txt')
+predicted_files_list = glob.glob('pred/*.txt')
 predicted_files_list.sort()
 
 for class_index, class_name in enumerate(gt_classes):
@@ -376,8 +376,8 @@ for class_index, class_name in enumerate(gt_classes):
     file_id = txt_file.split(".txt",1)[0]
     file_id = os.path.basename(os.path.normpath(file_id))
     if class_index == 0:
-      if not os.path.exists('ground-truth/' + file_id + ".txt"):
-        error_msg = "Error. File not found: ground-truth/" +  file_id + ".txt\n"
+      if not os.path.exists('true/' + file_id + ".txt"):
+        error_msg = "Error. File not found: true/" +  file_id + ".txt\n"
         error_msg += "(You can avoid this error message by running extra/intersect-gt-and-pred.py)"
         error(error_msg)
     lines = file_lines_to_list(txt_file)
@@ -510,8 +510,8 @@ with open(results_files_path + "/results.txt", 'w') as results_file:
         v_pos = int(height - margin - (bottom_border / 2))
         text = "Image: " + ground_truth_img[0] + " "
         img, line_width = draw_text_in_image(img, text, (margin, v_pos), white, 0)
-        text = "Class [" + str(class_index) + "/" + str(n_classes) + "]: " + class_name + " "
-        img, line_width = draw_text_in_image(img, text, (margin + line_width, v_pos), light_blue, line_width)
+        # text = "Class [" + str(class_index) + "/" + str(n_classes) + "]: " + class_name + " "
+        # img, line_width = draw_text_in_image(img, text, (margin + line_width, v_pos), light_blue, line_width)
         if ovmax != -1:
           color = light_red
           if status == "INSUFFICIENT OVERLAP":
